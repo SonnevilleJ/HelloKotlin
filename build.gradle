@@ -1,0 +1,54 @@
+group 'kotlin-jar'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.0.4'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+//kotlin.incremental=true
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "junit:junit:4.12"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+        kotlin {
+            srcDirs = ["src/main/kotlin"]
+        }
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java"]
+        }
+        kotlin {
+            srcDirs = ["src/test/kotlin"]
+        }
+    }
+}
+
+jar {
+    from {
+        (configurations.runtime).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes("Main-Class": "app")
+    }
+}
